@@ -10,7 +10,11 @@ import { ToastrService } from 'ngx-toastr';
 import { CustomValidators } from 'src/app/custom-validators'; 
 import { RegisterService } from "src/app/shared/services/register.service";
 import * as firebase from 'firebase';
+import { ChatService } from 'src/app/shared/services/chat/chat.service';
+
 //import * as io from 'socket.io-client';
+import { VERIFY_USER } from '../../../../../src/Events'
+import { emit } from 'process';
 
 
 
@@ -28,12 +32,17 @@ export class LoginComponent implements OnInit {
 
   //
   
-  constructor(private router:Router, /*private firebase: AngularFireDatabase*/ 
-    private firebaseAuth: AngularFireAuth, private toastr: ToastrService, private registerService: RegisterService) { }
-
+  constructor(private router:Router,public chatService:ChatService, /*private firebase: AngularFireDatabase*/ 
+    private firebaseAuth: AngularFireAuth, private toastr: ToastrService, private registerService: RegisterService) { 
+    }
+    correo:any;
     registerList: UserI[];
     register= [];
     itemRef: any;
+    state = {
+	  	nickname:"",
+	  	error:""
+	  };
 
   ngOnInit(): void {
 
@@ -80,6 +89,9 @@ export class LoginComponent implements OnInit {
     if(userExist){
       
       firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
+        this.correo=email;
+
+        this.chatService.IdUsuario(this.correo);
         this.router.navigate(['/home']);
         this.toastr.success('Login successful', 'Login acount', {
           positionClass: 'toast-top-center'
@@ -91,6 +103,7 @@ export class LoginComponent implements OnInit {
         // ...
         console.log(`Error [${errorCode}]: ${errorMessage}`);
       });
+
       } else {
       alert("El usuario no existe");
         }  

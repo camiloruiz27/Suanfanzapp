@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ChatService } from 'src/app/shared/services/chat/chat.service';
 import { MessageI } from '../../interfaces/MessageI';
-
+import { v4 as uuidv4 } from 'uuid';
 @Component({
   selector: 'app-chat-area',
   templateUrl: './chat-area.component.html',
@@ -19,12 +19,15 @@ export class ChatAreaComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
+  getTime(date){
+    return `${date.getHours()}:${("0"+date.getMinutes()).slice(-2)}`
+  }
   sendMsg() {
     const msg: MessageI = {
+      id:uuidv4(),
       content: this.msg,
       isMe: true,
-      time: "8:58",
+      time: this.getTime(new Date(Date.now())),
       isRead: false,
       owner: this.title
     }

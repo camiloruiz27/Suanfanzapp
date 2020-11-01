@@ -1,4 +1,5 @@
 export interface MessageI{
+    id:string,
     content: string
     time: string
     isRead: boolean

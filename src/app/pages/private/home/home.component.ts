@@ -13,14 +13,18 @@ import * as firebase from 'firebase';
 import { Router } from '@angular/router';
 //import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 import { AngularFireDatabase, AngularFireList } from '@angular/fire/database';
+//import * as socket from 'socket.io';
+import { ACTIVECHAT } from '../../../../../src/Events'
+import { VERIFY_USER } from '../../../../../src/Events'
+
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit, OnDestroy {
 
+export class HomeComponent implements OnInit, OnDestroy {
   FormAdd = new FormGroup({
     Numbercontact: new FormControl(),
     Namecontact: new FormControl()
@@ -33,18 +37,19 @@ export class HomeComponent implements OnInit, OnDestroy {
       connection: undefined,
       msgs: undefined
   };
-
+  Activechat:any;
+  
   chats: Array<ChatI> = [
-    {
+    /*{
       title: "El costeño",
       icon: "/assets/img/ca.jpeg",
       isRead: true,
       msgPreview: "como gallinazo",
       lastMsg: "11:13",
       msgs: [
-        {content: "a lo que se mueva", isRead:true, isMe:true, time:"7:24"},
+        /*{content: "a lo que se mueva", isRead:true, isMe:true, time:"7:24"},
         {content: "entonces ando de gallinazo", isRead:true, isMe:false, time:"7:25"},
-      ]
+      *//*]
     },
     {
       title: "El traumado",
@@ -53,9 +58,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       msgPreview: "Suerte es que le deseo, haga eso pi**",
       lastMsg: "18:30",
       msgs: [
-        {content: "Suerte es que le deseo, haga eso pi**", isRead:true, isMe:true, time:"9:24"},
+        /*{content: "Suerte es que le deseo, haga eso pi**", isRead:true, isMe:true, time:"9:24"},
         {content: "obligueme perro", isRead:true, isMe:false, time:"9:25"},
-      ]
+      *//*]
 
     },
     {
@@ -81,10 +86,11 @@ export class HomeComponent implements OnInit, OnDestroy {
       msgPreview: " 😎",
       lastMsg: "8:30",
       msgs: []
-    },
+    },*/
   ];
 
   currentChat = {
+    identifier:"",
     title: "",
     icon: "",
     msgs: []
@@ -96,7 +102,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     registerList: UserI[];
     register= [];
     itemRef: any;
-
+    name:string;
     ngOnInit(): void {
       this.initChat();
       this.UserAcount();
@@ -142,6 +148,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   initChat() {
     if (this.chats.length > 0) {
+      
       this.currentChat.title = this.chats[0].title;
       this.currentChat.icon = this.chats[0].icon;
       this.currentChat.msgs = this.chats[0].msgs;
@@ -156,10 +163,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   onSelectInbox(index: number) {
+    this.Activechat =this.chats[index].identifier;
+    console.log(this.Activechat);
     this.currentChat.title = this.chats[index].title;
       this.currentChat.icon = this.chats[index].icon;
       this.currentChat.msgs = this.chats[index].msgs;
-  }
+  this.chatService.idenificadorId(this.Activechat);
+    }
 
   async  doLogout() {
     await this.authService.logout();
@@ -203,7 +213,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       PerfilPhoto.style.left = "-100vh";
     }
   }
-
   countPhoto : number = 0;
   
   async SendContact() {
@@ -249,22 +258,20 @@ export class HomeComponent implements OnInit, OnDestroy {
         console.log("Este usuario no existe")
       } else {
         console.log(ContactName, ContactNumber);
-        this.firebase.database.ref('registers').child(Key).child('contacts').push({
+        /*this.firebase.database.ref('registers').child(Key).child('contacts').push({
           Namecontact: ContactName,
           Numbercontact: ContactNumber,
-        });
+        });*/
       }
     }
-
     this.FormAdd.reset({
       Namecontact: "",
       Numbercontact: "",
     });
+    this.name=String(ContactName)
+    this.chats.push({identifier:ContactNumber,title:this.name,icon:"/assets/img/Default.png",msgPreview:"", isRead:false, lastMsg:"", msgs:[]})
   }
-
   SearchAnim(){
     
   }
-  
-
 }

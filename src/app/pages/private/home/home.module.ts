@@ -20,4 +20,6 @@ import { SearchComponent } from './components/search/search.component';
     CommonModule, FormsModule, ReactiveFormsModule
   ],
 })
-export class HomeModule { }
+export class HomeModule { 
+
+}
