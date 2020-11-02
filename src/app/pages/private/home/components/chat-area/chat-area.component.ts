@@ -29,7 +29,8 @@ export class ChatAreaComponent implements OnInit {
       isMe: true,
       time: this.getTime(new Date(Date.now())),
       isRead: false,
-      owner: this.title
+      owner: this.title,
+      from:""
     }
     this.chatService.sendMsg(msg);
     this.msg = "";

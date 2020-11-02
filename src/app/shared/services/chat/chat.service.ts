@@ -41,7 +41,7 @@ export class ChatService {
     })
     
   }
-  
+  //identifica a quien le va a enviar el mensaje
   idenificadorId(identificador:string){
     /*return new Observable(observer => {
       this.socket.on("who", msg => {
@@ -52,6 +52,7 @@ export class ChatService {
     console.log("Identificaden la Funcion Identificador:" +identificador);
     console.log("Lista en La funcion identificador: "+this.ListaUsuarios);
   }
+  //le envia al servidor quien acaba de conectarse
   EnviarUsuario(recibido:NewUsers){
     let usuerio: NewUsers = {
       id:recibido.id,
@@ -59,29 +60,51 @@ export class ChatService {
     }
     this.socket.emit('UserConnected',usuerio);
   }
+  //nos dice quien inicio sesion
   IdUsuario(email:string){
     console.log()
     this.email=email;
     console.log("Ha iniciado sesion " +email);
     //({user:this.createUser({name:email, socketId:this.identificadormio})})
     //this.ListaUsuarios.push(email,this.identificadormio);
-    
   }
+
   getNewMsgs() {
     return new Observable(observer => {
-      this.socket.on("newMsg", mensaje => {
-
-        observer.next(mensaje);
+      this.socket.on("newPerson", Userio => {
+        observer.next(Userio);
       });
     });
   }
 
+  //recibe el mensaje que se va a enviar
   sendMsg(msg: MessageI) {
     this.contenido=msg.content;
-    this.idenfiticacionMensaje=msg.id
+    this.idenfiticacionMensaje=msg.id;
+    msg.from=this.email;
     this.envioMensaje(msg)
-    //this.socket.emit('newMsg', msg); 
+    //this.socket.emit('newMsg', msg);
   }
+  paraRenderizarMensaje(){
+    console.log("Estoy dentro renderizar")
+    let observable = new Observable(observer=>{
+      this.socket.on('otro', (data)=>{
+        console.log("para que se suscriban")
+          observer.next(data);
+      });
+      //return () => {this.socket.disconnect();}
+  });
+
+  return observable;
+    
+    return new Observable(observer => {
+      this.socket.on('otro', mensaje => {
+        console.log("para que se suscriban")
+        observer.next(mensaje);
+      });
+    });
+  }
+  //recibe todos los datos necesarios para enviar el mensaje
   envioMensaje(mensaje:MessageI){
     let sms: MessagePrivate = {
       id:this.idenfiticacionMensaje,
@@ -93,9 +116,9 @@ export class ChatService {
     sms.from=this.identificadormio
 
     console.log(sms)
-    this.socket.emit('newMsg',sms,mensaje);
+    this.socket.emit('WhatMessage',sms,mensaje);
   }
-
+  //desconecta al usuario del servidor
   disconnect() {
     this.socket.disconnect();
     console.log("Se ha desconectado el usuario"+this.identificadormio)

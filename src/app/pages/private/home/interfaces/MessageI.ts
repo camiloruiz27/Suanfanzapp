@@ -5,4 +5,5 @@ export interface MessageI{
     isRead: boolean
     owner?: string
     isMe: boolean
+    from:string
 }

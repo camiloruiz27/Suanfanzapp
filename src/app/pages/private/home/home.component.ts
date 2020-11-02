@@ -38,6 +38,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       msgs: undefined
   };
   Activechat:any;
+  CorreodelNuevo:any;
   
   chats: Array<ChatI> = [
     /*{
@@ -97,7 +98,25 @@ export class HomeComponent implements OnInit, OnDestroy {
   };
 
   constructor(public authService: AuthService, public chatService: ChatService, private firebaseAuth:AngularFireAuth, 
-    private registerService: RegisterService, private router: Router, private firebase: AngularFireDatabase) {}
+    private registerService: RegisterService, private router: Router, private firebase: AngularFireDatabase) {
+      
+      this.chatService.paraRenderizarMensaje().subscribe((data:MessageI)=>{
+        console.log("Llego mensaje");
+        //msg.isMe = this.currentChat.title === msg.owner ? true : false;
+        //this.currentChat.msgs.push(msg);
+        for (let i = 0; i < this.chats.length; i++) {
+          const element = this.chats[i];
+          if (data.from==this.chats[i].identifier) {
+            this.chats[i].lastMsg=data.content
+            this.chats[i].msgPreview=data.time
+            data.isMe = this.currentChat.title === data.owner ? true : false;
+            this.currentChat.msgs.push(data);
+          }else{
+          this.chats.push({identifier:data.from,title:data.from,icon:"/assets/img/Default.png",msgPreview:data.time, isRead:false, lastMsg:data.content, msgs:[data]})
+              }
+        }
+      })
+    }
 
     registerList: UserI[];
     register= [];
@@ -155,10 +174,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
     this.subscriptionList.connection = this.chatService.connect().subscribe(_ => {
       console.log("Nos conectamos");
-      this.subscriptionList.msgs = this.chatService.getNewMsgs().subscribe((msg: MessageI) => {
+     /* this.subscriptionList.msgs = this.chatService.getNewMsgs().subscribe((msg: MessageI,) => {
         msg.isMe = this.currentChat.title === msg.owner ? true : false;
         this.currentChat.msgs.push(msg);
-      });
+      });*/
     });
   }
 
@@ -269,8 +288,38 @@ export class HomeComponent implements OnInit, OnDestroy {
       Numbercontact: "",
     });
     this.name=String(ContactName)
+    this.CorreodelNuevo=(ContactNumber)
     this.chats.push({identifier:ContactNumber,title:this.name,icon:"/assets/img/Default.png",msgPreview:"", isRead:false, lastMsg:"", msgs:[]})
   }
+  /*this._chatService.totalUsers()
+  .subscribe((data)=>{
+    this.count=data.count
+
+  })*/
+  
+
+  /*WhoIsWritingMe(){
+    /*this.subscriptionList.connection = this.chatService.connect().subscribe(_ => {
+      console.log("Llego mensaje");*/
+      /*
+      this.chatService.paraRenderizarMensaje().subscribe(() => {
+        console.log("Llego mensaje");
+        //msg.isMe = this.currentChat.title === msg.owner ? true : false;
+        //this.currentChat.msgs.push(msg);
+        for (let i = 0; i < this.chats.length; i++) {
+          const element = this.chats[i];
+          if (msg.from==this.chats[i].identifier) {
+            this.chats[i].lastMsg=msg.content
+            this.chats[i].msgPreview=msg.time
+            msg.isMe = this.currentChat.title === msg.owner ? true : false;
+            this.currentChat.msgs.push(msg);
+          }else{
+          this.chats.push({identifier:msg.from,title:msg.from,icon:"/assets/img/Default.png",msgPreview:msg.time, isRead:false, lastMsg:msg.content, msgs:[msg]})
+              }
+        }
+      });
+    
+  }*/
   SearchAnim(){
     
   }
