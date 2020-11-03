@@ -74,15 +74,11 @@ io.on('connection', (socket) => {
       console.log("Se ha enviado mensahe a: "+recieverSocket+","+msg.to)
       console.log("Se ha enviado: "+mensaje.content)
       console.log("mensaje from: "+msg.from)
-      
       //HomeComponent.WhoIsWritingMe(msg.from,mensaje)
-			//io.to(recieverSocket).emit('WhatMessage',mensaje)
-      
+			io.to(recieverSocket).emit('Send',mensaje)
     //}
-    io.emit('otro',mensaje)
-		
+    //io.emit('otro',mensaje)
   })
-  
 
 
 });

@@ -87,22 +87,20 @@ export class ChatService {
   }
   paraRenderizarMensaje(){
     console.log("Estoy dentro renderizar")
-    let observable = new Observable(observer=>{
-      this.socket.on('otro', (data)=>{
-        console.log("para que se suscriban")
-          observer.next(data);
-      });
-      //return () => {this.socket.disconnect();}
-  });
-
-  return observable;
-    
     return new Observable(observer => {
-      this.socket.on('otro', mensaje => {
+      this.socket.on('Send', mensaje => {
         console.log("para que se suscriban")
         observer.next(mensaje);
       });
     });
+    /*let observable = new Observable(observer=>{
+      this.socket.on('Send', (data)=>{
+        console.log("Llega el mensaje para enviar")
+        observer.next(data);
+      });
+      //return () => {this.socket.disconnect();}
+  });
+  return observable;*/
   }
   //recibe todos los datos necesarios para enviar el mensaje
   envioMensaje(mensaje:MessageI){
@@ -111,10 +109,10 @@ export class ChatService {
       to:this.identificadormio,
       from:this.identificadormio
     }
+    //mensaje.isMe=false;
     sms.id=mensaje.id;
     sms.to=this.identificacion;
-    sms.from=this.identificadormio
-
+    sms.from=this.identificadormio;
     console.log(sms)
     this.socket.emit('WhatMessage',sms,mensaje);
   }

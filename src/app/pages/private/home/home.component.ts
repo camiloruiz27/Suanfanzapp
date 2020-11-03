@@ -16,6 +16,8 @@ import { AngularFireDatabase, AngularFireList } from '@angular/fire/database';
 //import * as socket from 'socket.io';
 import { ACTIVECHAT } from '../../../../../src/Events'
 import { VERIFY_USER } from '../../../../../src/Events'
+import { MessagePrivate } from './interfaces/MessagePrivate';
+import { BrowserStack } from 'protractor/built/driverProviders';
 
 
 @Component({
@@ -97,25 +99,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     msgs: []
   };
 
-  constructor(public authService: AuthService, public chatService: ChatService, private firebaseAuth:AngularFireAuth, 
+  constructor(public authService: AuthService, public chatService: ChatService, private firebaseAuth:AngularFireAuth,
     private registerService: RegisterService, private router: Router, private firebase: AngularFireDatabase) {
-      
-      this.chatService.paraRenderizarMensaje().subscribe((data:MessageI)=>{
-        console.log("Llego mensaje");
-        //msg.isMe = this.currentChat.title === msg.owner ? true : false;
-        //this.currentChat.msgs.push(msg);
-        for (let i = 0; i < this.chats.length; i++) {
-          const element = this.chats[i];
-          if (data.from==this.chats[i].identifier) {
-            this.chats[i].lastMsg=data.content
-            this.chats[i].msgPreview=data.time
-            data.isMe = this.currentChat.title === data.owner ? true : false;
-            this.currentChat.msgs.push(data);
-          }else{
-          this.chats.push({identifier:data.from,title:data.from,icon:"/assets/img/Default.png",msgPreview:data.time, isRead:false, lastMsg:data.content, msgs:[data]})
-              }
-        }
-      })
     }
 
     registerList: UserI[];
@@ -125,6 +110,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
       this.initChat();
       this.UserAcount();
+      this.WhoIsWritingMe();
       this.registerService.getRegister()
       .snapshotChanges().subscribe(item => {
         this.registerList = [];
@@ -263,11 +249,11 @@ export class HomeComponent implements OnInit, OnDestroy {
       if (!userExist) {
         console.log("Este usuario no existe")
       } else {
-        console.log(ContactName, ContactNumber);
+        /*console.log(ContactName, ContactNumber);
         this.firebase.database.ref('registers').child(Key).child('contacts').push({
           Namecontact: ContactName,
           Numbercontact: ContactNumber,
-        });
+        });*/
       }
     } else {
       // console.log("Es teléfono");
@@ -298,28 +284,55 @@ export class HomeComponent implements OnInit, OnDestroy {
   })*/
   
 
-  /*WhoIsWritingMe(){
+  WhoIsWritingMe(){
     /*this.subscriptionList.connection = this.chatService.connect().subscribe(_ => {
       console.log("Llego mensaje");*/
-      /*
-      this.chatService.paraRenderizarMensaje().subscribe(() => {
+      console.log("Entre a la funcion renderizar");
+      this.subscriptionList.msgs=this.chatService.paraRenderizarMensaje().subscribe((msg: MessageI) => {
+        //let mensaje: MessageI = {}
         console.log("Llego mensaje");
+        console.log(msg.content);
         //msg.isMe = this.currentChat.title === msg.owner ? true : false;
         //this.currentChat.msgs.push(msg);
-        for (let i = 0; i < this.chats.length; i++) {
-          const element = this.chats[i];
-          if (msg.from==this.chats[i].identifier) {
+        if(this.chats.length==0){
+          console.log("primer IF")
+          this.cargandoContactos(msg);
+        }else{
+          for (let i = 0; i < this.chats.length; i++) {
+          console.log("entre al for y voy en el recorrido: "+i)
+          if (msg.from===this.chats[i].identifier) {
+            console.log("Segundo IF y meto nuevo mensage")
+            console.log("ya exite el contacto")
             this.chats[i].lastMsg=msg.content
             this.chats[i].msgPreview=msg.time
             msg.isMe = this.currentChat.title === msg.owner ? true : false;
-            this.currentChat.msgs.push(msg);
-          }else{
-          this.chats.push({identifier:msg.from,title:msg.from,icon:"/assets/img/Default.png",msgPreview:msg.time, isRead:false, lastMsg:msg.content, msgs:[msg]})
+            this.chats[i].msgs.push(msg);
+            }else{
+              
+              let f=i
+              f++
+              if (f==this.chats.length) {
+                console.log("Entro al Elsey creo nuevo contacto")
+              console.log("Nuevo contacto");
+              this.cargandoContactos(msg)
               }
-        }
-      });
-    
-  }*/
+              
+              }
+            //this.nuevosMensajes(msg)
+            }
+              
+      }});
+  }
+
+    async cargandoContactos(msg: MessageI) {
+      msg.isMe = this.currentChat.title === msg.owner ? true : false;
+      this.chats.push({identifier:msg.from,title:msg.from,icon:"/assets/img/Default.png",msgPreview:msg.time, isRead:false, lastMsg:msg.content, msgs:[msg]})
+    }
+    async myNewMessages(msg: MessageI){
+      console.log("si imprimo mis mensajes")
+      msg.isMe=true;
+      this.currentChat.msgs.push(msg);
+    }
   SearchAnim(){
     
   }
