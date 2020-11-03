@@ -46,6 +46,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   
   chats: Array<ChatI> = [
     {
+      status:"Offline",
       identifier:"alejandrosandovalp@gmail.com",
       title: "El costeño",
       icon: "/assets/img/ca.jpeg",
@@ -112,8 +113,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     itemRef: any;
     name:string;
     ngOnInit(): void {
+      this.statusUserConnected()
+      this.statusUserDesconnected();
       this.initChat();
-      this.whoInOnLine();
       this.UserAcount();
       this.WhoIsWritingMe();
       this.registerService.getRegister()
@@ -158,10 +160,11 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   initChat() {
     if (this.chats.length > 0) {
-      
       this.currentChat.title = this.chats[0].title;
       this.currentChat.icon = this.chats[0].icon;
       this.currentChat.msgs = this.chats[0].msgs;
+      this.currentChat.status = this.chats[0].status;
+
     }
     this.subscriptionList.connection = this.chatService.connect().subscribe(_ => {
       console.log("Nos conectamos");
@@ -171,34 +174,43 @@ export class HomeComponent implements OnInit, OnDestroy {
       });*/
     });
   }
- async whoInOnLine(){
-    this.chatService.estaConectado().subscribe((usuarios: NewUsers) => {
+  async statusUserConnected(){
+    console.log("Status User")
+    this.chatService.estaConectado().subscribe((usuarios: string) => {
       console.log("Llego lista de usuarios conectados");
       console.log("estamos parados sobre"+this.currentChat.title);
-      console.log("quien llego"+usuarios.name)
-      if (this.currentChat.title==usuarios.name) {
-        this.estadoActual="online";
-        
+      console.log("quien llego"+usuarios)
+      for (let index = 0; index < this.chats.length; index++) {
+        const element = this.chats[index];
+        console.log("VueltaLookingStatus:"+index)
+        if(element.identifier==usuarios){
+          element.status="Online"
+        }
       }
-    
-    });
+      });
   }
-  onSelectInbox(index: number) {
-    this.estadoActual="online";
+  async statusUserDesconnected(){
+    console.log("Status Desconectado")
+    this.currentChat.status="Offline"
+    this.chatService.estaDEsconectado().subscribe((desconectado: string) => {
+      console.log("Llego lista de usuarios desconectados");
+      console.log("estamos parados sobre"+this.currentChat.title);
+      console.log("quien llego"+desconectado)
+      this.chats.forEach(element => {
+        if(element.identifier===desconectado){
+          element.status="Offline"
+        }
+      });
+      });
+  }
+  async onSelectInbox(index: number) {
+    //this.estadoActual="online";
     this.Activechat =this.chats[index].identifier;
-   // console.log(this.Activechat);
-   this.chatService.estaConectado().subscribe((usuarios: NewUsers) => {
-    console.log("Llego lista de usuarios conectados");
-    console.log("estamos parados sobre"+this.currentChat.title);
-    console.log("quien llego"+usuarios.name)
-    if (this.currentChat.title==usuarios.name) {
-      this.estadoActual="online";
-    }
-    });
+   //this.statusUser();
     this.currentChat.title = this.chats[index].title;
       this.currentChat.icon = this.chats[index].icon;
       this.currentChat.msgs = this.chats[index].msgs;
-      this.currentChat.status=this.estadoActual;
+      this.currentChat.status=this.chats[index].status;
       console.log("he undido en"+this.currentChat.title)
       console.log("estado"+this.currentChat.status)
     this.chatService.idenificadorId(this.Activechat);
@@ -304,7 +316,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
     this.name=String(ContactName)
     this.CorreodelNuevo=(ContactNumber)
-    this.chats.push({identifier:ContactNumber,title:this.name,icon:"/assets/img/Default.png",msgPreview:"", isRead:false, lastMsg:"", msgs:[]})
+    this.chats.push({status:"",identifier:ContactNumber,title:this.name,icon:"/assets/img/Default.png",msgPreview:"", isRead:false, lastMsg:"", msgs:[]})
   }
   /*this._chatService.totalUsers()
   .subscribe((data)=>{
@@ -315,7 +327,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   WhoIsWritingMe(){
       console.log("Entre a la funcion renderizar");
-      this.subscriptionList.msgs=this.chatService.paraRenderizarMensaje().subscribe((msg: MessageI) => {
+      this.chatService.paraRenderizarMensaje().subscribe((msg: MessageI) => {
         console.log("Llego mensaje");
         console.log(msg.content);
         if(this.chats.length==0){
@@ -326,10 +338,12 @@ export class HomeComponent implements OnInit, OnDestroy {
           console.log("entre al for y voy en el recorrido: "+i)
             const newLocal = this.chats[i].identifier;
           if (msg.from===newLocal) {
+            this.statusUserConnected();
             console.log("Segundo IF y meto nuevo mensage")
             console.log("ya exite el contacto")
             this.chats[i].lastMsg=msg.content
             this.chats[i].msgPreview=msg.time
+            //this.chats[i].status="Online"
             msg.isMe = this.currentChat.title === msg.owner ? true : false;
             this.chats[i].msgs.push(msg);
             }else{
@@ -352,13 +366,19 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     async cargandoContactos(msg: MessageI) {
       msg.isMe = this.currentChat.title === msg.owner ? true : false;
-      this.chats.push({identifier:msg.from,title:msg.from,icon:"/assets/img/Default.png",msgPreview:msg.time, isRead:false, lastMsg:msg.content, msgs:[msg]})
+      this.chats.push({status:"Online",identifier:msg.from,title:msg.from,icon:"/assets/img/Default.png",msgPreview:msg.time, isRead:false, lastMsg:msg.content, msgs:[msg]})
     }
     async myNewMessages(msg: MessageI){
+      //this.statusUserDesconnected()
       console.log("si imprimo mis mensajes")
       msg.isMe=true;
       this.currentChat.msgs.push(msg);
     }
+    async esLeido(){
+      this.currentChat.msgs
+
+    }
+
   SearchAnim(){
     
   }

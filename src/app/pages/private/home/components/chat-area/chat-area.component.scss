@@ -35,14 +35,14 @@ $titleFont: sfProTextMedium;
             font-family: $titleFont;
             flex-grow: 1;
             cursor: pointer;
+            .estadoUsuario {
+                font-size: 11px;
+                color: grey;
+                font-family: $titleFont;
+                flex-grow: 1;
+            }
         }
-        .estadoUsuario {
-            font-size: 10px;
-            color: grey;
-            font-family: $titleFont;
-            flex-grow: 1;
-            cursor: pointer;
-        }
+        
         .rightRightIcons {
             height: 40px;
             margin-left: 20px;

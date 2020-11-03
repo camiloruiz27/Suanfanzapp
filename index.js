@@ -8,39 +8,50 @@ const { isClassOrTypeElement } = require('typescript');
 const SocketManager = require('./src/server/SocketManager')
 //import {ListaUsuario} from "./src/app/shared/services/chat/chat.service";
 //const{ChatService}=require('./src/app/shared/services/chat/chat.service')
-const { createUser, createMessage, createChat } = require('./src/Factories')
+const { createUser, createMessage, createChat } = require('./src/Factories');
 
+const conectado = "online";
+const desconectado="offline"
 //let {HomeComponent} = require('./src/app/pages/private/home/home.component')
 //import {HomeComponent} from "./src/app/pages/private/home/home.component";
 //import * as HomeComponent from './src/app/pages/private/home/home.component';
 let connectedUsers = { }
 
-
 io.on('connection', (socket) => {
   console.log("Socket Id:" + socket.id);
   console.log('a user connected');
+  io.sockets.emit('broadcast',conectado)
   //console.log(socket.id);
   //console.log(email);
   //dice queusuarios estan conectados
+  
   socket.on('UserConnected', (user)=>{
 		//user.socketId = socket.id
 		connectedUsers = addUser(connectedUsers, user)
 		socket.user = user
 		//sendMessageToChatFromUser = sendMessageToChat(user.name)
-		//sendTypingFromUser = sendTypingToChat(user.name)
+    //sendTypingFromUser = sendTypingToChat(user.name)
+    /*for (let index = 0; index < connectedUsers.length; index++) {
+      let usuarios = connectedUsers[index].id;
+      let usuarioname = connectedUsers[index].name;
+      console.log("Nombre dentro:"+usuarioname+"id: "+usuarios)
+    }*/
+    //console.log("Nombre:"+this.usuarioname+"id: "+this.usuarios)
     io.emit('UserConnected', connectedUsers)
-    io.emit('ListaUsuario', connectedUsers)
-		console.log(connectedUsers);
-
+    console.log("imprimiedo UserConnected "+socket.user.name)
+    io.emit('Conectado',socket.user.name)
+    //io.emit('ListaUsuario', this.usuarioname)
+    
+    console.log(connectedUsers);
   })
   //Funcion cuando alguien se desconecte
   socket.on('disconnect', ()=>{
 		if("user" in socket){
 			connectedUsers = removeUser(connectedUsers, socket.user.name)
-
-			io.emit('UserConnected', connectedUsers)
-			console.log("Disconnect", connectedUsers);
-		}
+      console.log("Se ha deconectado "+socket.user.name)
+      //io.emit('Desconectado',socket.user.name)
+    }
+    io.sockets.emit('broadcast',desconectado)
   })
 
   //funcion cuando alguien cierre sesion
@@ -71,18 +82,26 @@ io.on('connection', (socket) => {
   //recibe la info del mensaje privado
   socket.on('WhatMessage',(msg,mensaje)=>{
 		//if(msg.to in connectedUsers){
-			const recieverSocket = connectedUsers[msg.to].id
+      usuario=isUser(connectedUsers,msg.to)
+      console.log("ConnectedUser[msg.to] "+usuario)
+      if (usuario===undefined) {
+        console.log("usuario no conectado")
+        io.emit('Desconectado',msg.to)
+      }else{
+        const recieverSocket = connectedUsers[msg.to].id
+      //const recieverName = connectedUsers[msg.from].name
       //io.to(recieverSocket).emit(mensaje)
       console.log("Se ha enviado mensahe a: "+recieverSocket+","+msg.to)
       console.log("Se ha enviado: "+mensaje.content)
       console.log("mensaje from: "+msg.from)
       //HomeComponent.WhoIsWritingMe(msg.from,mensaje)
-			io.to(recieverSocket).emit('Send',mensaje)
+      io.emit('Conectado',msg.to)
+      io.to(recieverSocket).emit('Send',mensaje)
+      }
+      //
     //}
     //io.emit('otro',mensaje)
   })
-
-
 });
 
 http.listen(port, () => {
@@ -107,5 +126,6 @@ http.listen(port, () => {
   }
 
   function isUser(userList, username){
-  	return username in userList
+    nombre=userList[username]
+  	return nombre
 }

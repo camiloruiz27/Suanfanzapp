@@ -1,7 +1,7 @@
 <div id="app">
     <div class="leftBigContainer">
         <div class="addcontact">
-            <div class="goBackBtn" (click)="addcontact()"> 
+            <div class="goBackBtn" (click)="addcontact()">
                 <svg class="backimg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                     <path fill="#ffffff" d="M12 4l1.4 1.4L7.8 11H20v2H7.8l5.6 5.6L12 20l-8-8 8-8z"></path>
                 </svg>
@@ -81,6 +81,6 @@
         </div>
     </div>
     <div class="rightBigContainer">
-        <app-chat-area [title]="currentChat.title" [icon]="currentChat.icon" [msgs]="currentChat.msgs"></app-chat-area>
+        <app-chat-area [title]="currentChat.title" [icon]="currentChat.icon" [msgs]="currentChat.msgs" ></app-chat-area><!--[status]="currentChat.status"-->
     </div>
 </div>

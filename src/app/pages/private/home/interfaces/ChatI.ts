@@ -1,6 +1,7 @@
 import { MessageI } from './MessageI';
 
 export interface ChatI{
+    status:any,
     identifier:any
     title: string
     icon: string

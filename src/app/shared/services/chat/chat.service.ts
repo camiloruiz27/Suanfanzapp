@@ -73,13 +73,10 @@ export class ChatService {
   }
   estaConectado(){
     return new Observable(observer => {
-      this.socket.on('ListaUsuario', Userio => {
-        let whoIS:NewUsers ={
-          id:Userio.id,
-          name:Userio.name
-        }
-        console.log("recibi a la gente conectada"+whoIS.name)
-        observer.next(whoIS);
+      console.log("funcion conectado")
+      this.socket.on('Conectado', conectado => {
+        console.log("recibi a la gente conectada"+conectado)
+        observer.next(conectado);
       });
     });
   }
@@ -125,9 +122,20 @@ export class ChatService {
   //desconecta al usuario del servidor
   disconnect() {
     this.socket.disconnect();
+
     console.log("Se ha desconectado el usuario"+this.identificadormio)
   }
+  estaDEsconectado(){
+    return new Observable(observer => {
+      console.log("funcion desconectado")
+      //this.homeComponent.statusUserDesconnected();
+      this.socket.on('Desconectado', status => {
+        console.log("recibi a la gente conectada"+status)
 
+        observer.next(status);
+      });
+    });
+  }
 }
 
 //Asegurando main
