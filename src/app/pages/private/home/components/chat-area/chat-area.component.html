@@ -14,11 +14,19 @@
         </div>
     </div>
 </div>
+
+    
 <div class="chat">
-    <!--div class="chatDateContainer">
-        <div class="chatDate">TODAY</div>
-    </div-->
-    <app-chat-message *ngFor="let msg of msgs" [content]="msg.content" [time]="msg.time" [isMe]="msg.isMe" [isRead] = "msg.isRead"></app-chat-message>
+
+   
+    
+        <!--div class="chatDateContainer">
+            <div class="chatDate">TODAY</div>
+        </div-->
+        <app-chat-message *ngFor="let msg of msgs" [content]="msg.content" [time]="msg.time" [isMe]="msg.isMe" [isRead] = "msg.isRead"></app-chat-message>
+   
+    
+
 </div>
 <div class="sendMessageForm">
     <div class="leftMessageFormIcons">
