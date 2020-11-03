@@ -12,6 +12,7 @@ export class ChatAreaComponent implements OnInit {
 
   @Input() title: string = ""
   @Input() icon: string = ""
+  @Input() status: string = ""
   @Input() msgs: Array<MessageI> = []
 
   msg: string;

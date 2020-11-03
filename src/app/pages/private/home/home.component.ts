@@ -18,6 +18,7 @@ import { ACTIVECHAT } from '../../../../../src/Events'
 import { VERIFY_USER } from '../../../../../src/Events'
 import { MessagePrivate } from './interfaces/MessagePrivate';
 import { BrowserStack } from 'protractor/built/driverProviders';
+import { NewUsers } from 'src/app/shared/interfaces/NewUser';
 
 
 @Component({
@@ -41,19 +42,21 @@ export class HomeComponent implements OnInit, OnDestroy {
   };
   Activechat:any;
   CorreodelNuevo:any;
+  estadoActual:any;
   
   chats: Array<ChatI> = [
-    /*{
+    {
+      identifier:"alejandrosandovalp@gmail.com",
       title: "El costeño",
       icon: "/assets/img/ca.jpeg",
       isRead: true,
       msgPreview: "como gallinazo",
       lastMsg: "11:13",
       msgs: [
-        /*{content: "a lo que se mueva", isRead:true, isMe:true, time:"7:24"},
-        {content: "entonces ando de gallinazo", isRead:true, isMe:false, time:"7:25"},
-      *//*]
-    },
+        {id:"154524jdgsy",content: "a lo que se mueva", isRead:true, isMe:true, time:"7:24", from:"pepe@pepe"},
+        {id:"154524yu",content: "entonces ando de gallinazo", isRead:true, isMe:false, time:"7:25", from:"pepe@pepe"},
+        ]
+    }/*,
     {
       title: "El traumado",
       icon: "/assets/img/tr.jpg",
@@ -95,7 +98,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   currentChat = {
     identifier:"",
     title: "",
-    status:"Offline",
+    status:"",
     icon: "",
     msgs: []
   };
@@ -110,6 +113,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     name:string;
     ngOnInit(): void {
       this.initChat();
+      this.whoInOnLine();
       this.UserAcount();
       this.WhoIsWritingMe();
       this.registerService.getRegister()
@@ -167,15 +171,38 @@ export class HomeComponent implements OnInit, OnDestroy {
       });*/
     });
   }
-
+ async whoInOnLine(){
+    this.chatService.estaConectado().subscribe((usuarios: NewUsers) => {
+      console.log("Llego lista de usuarios conectados");
+      console.log("estamos parados sobre"+this.currentChat.title);
+      console.log("quien llego"+usuarios.name)
+      if (this.currentChat.title==usuarios.name) {
+        this.estadoActual="online";
+        
+      }
+    
+    });
+  }
   onSelectInbox(index: number) {
+    this.estadoActual="online";
     this.Activechat =this.chats[index].identifier;
-    console.log(this.Activechat);
+   // console.log(this.Activechat);
+   this.chatService.estaConectado().subscribe((usuarios: NewUsers) => {
+    console.log("Llego lista de usuarios conectados");
+    console.log("estamos parados sobre"+this.currentChat.title);
+    console.log("quien llego"+usuarios.name)
+    if (this.currentChat.title==usuarios.name) {
+      this.estadoActual="online";
+    }
+    });
     this.currentChat.title = this.chats[index].title;
       this.currentChat.icon = this.chats[index].icon;
       this.currentChat.msgs = this.chats[index].msgs;
-  this.chatService.idenificadorId(this.Activechat);
-  
+      this.currentChat.status=this.estadoActual;
+      console.log("he undido en"+this.currentChat.title)
+      console.log("estado"+this.currentChat.status)
+    this.chatService.idenificadorId(this.Activechat);
+
     }
 
   async  doLogout() {

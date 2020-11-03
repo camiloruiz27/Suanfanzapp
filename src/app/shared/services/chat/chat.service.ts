@@ -43,11 +43,6 @@ export class ChatService {
   }
   //identifica a quien le va a enviar el mensaje
   idenificadorId(identificador:string){
-    /*return new Observable(observer => {
-      this.socket.on("who", msg => {
-        observer.next(msg);
-      });
-    });*/
     this.identificacion=identificador
     console.log("Identificaden la Funcion Identificador:" +identificador);
     console.log("Lista en La funcion identificador: "+this.ListaUsuarios);
@@ -78,8 +73,13 @@ export class ChatService {
   }
   estaConectado(){
     return new Observable(observer => {
-      this.socket.on("newPerson", Userio => {
-        observer.next(Userio);
+      this.socket.on('ListaUsuario', Userio => {
+        let whoIS:NewUsers ={
+          id:Userio.id,
+          name:Userio.name
+        }
+        console.log("recibi a la gente conectada"+whoIS.name)
+        observer.next(whoIS);
       });
     });
   }

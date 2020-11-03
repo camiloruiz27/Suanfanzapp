@@ -21,13 +21,15 @@ io.on('connection', (socket) => {
   console.log('a user connected');
   //console.log(socket.id);
   //console.log(email);
+  //dice queusuarios estan conectados
   socket.on('UserConnected', (user)=>{
 		//user.socketId = socket.id
 		connectedUsers = addUser(connectedUsers, user)
 		socket.user = user
 		//sendMessageToChatFromUser = sendMessageToChat(user.name)
 		//sendTypingFromUser = sendTypingToChat(user.name)
-		io.emit('UserConnected', connectedUsers)
+    io.emit('UserConnected', connectedUsers)
+    io.emit('ListaUsuario', connectedUsers)
 		console.log(connectedUsers);
 
   })
