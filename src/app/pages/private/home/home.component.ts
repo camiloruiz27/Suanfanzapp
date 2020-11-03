@@ -95,6 +95,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   currentChat = {
     identifier:"",
     title: "",
+    status:"Offline",
     icon: "",
     msgs: []
   };
@@ -174,6 +175,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.currentChat.icon = this.chats[index].icon;
       this.currentChat.msgs = this.chats[index].msgs;
   this.chatService.idenificadorId(this.Activechat);
+  
     }
 
   async  doLogout() {
@@ -285,22 +287,18 @@ export class HomeComponent implements OnInit, OnDestroy {
   
 
   WhoIsWritingMe(){
-    /*this.subscriptionList.connection = this.chatService.connect().subscribe(_ => {
-      console.log("Llego mensaje");*/
       console.log("Entre a la funcion renderizar");
       this.subscriptionList.msgs=this.chatService.paraRenderizarMensaje().subscribe((msg: MessageI) => {
-        //let mensaje: MessageI = {}
         console.log("Llego mensaje");
         console.log(msg.content);
-        //msg.isMe = this.currentChat.title === msg.owner ? true : false;
-        //this.currentChat.msgs.push(msg);
         if(this.chats.length==0){
           console.log("primer IF")
           this.cargandoContactos(msg);
         }else{
           for (let i = 0; i < this.chats.length; i++) {
           console.log("entre al for y voy en el recorrido: "+i)
-          if (msg.from===this.chats[i].identifier) {
+            const newLocal = this.chats[i].identifier;
+          if (msg.from===newLocal) {
             console.log("Segundo IF y meto nuevo mensage")
             console.log("ya exite el contacto")
             this.chats[i].lastMsg=msg.content
@@ -308,17 +306,18 @@ export class HomeComponent implements OnInit, OnDestroy {
             msg.isMe = this.currentChat.title === msg.owner ? true : false;
             this.chats[i].msgs.push(msg);
             }else{
-              
+              console.log("Entre al else")
               let f=i
               f++
+              console.log(f)
               if (f==this.chats.length) {
-                console.log("Entro al Elsey creo nuevo contacto")
+              console.log("Entro al Elsey creo nuevo contacto")
               console.log("Nuevo contacto");
               this.cargandoContactos(msg)
+              break;
               }
               
               }
-            //this.nuevosMensajes(msg)
             }
               
       }});

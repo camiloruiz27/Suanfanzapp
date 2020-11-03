@@ -76,7 +76,13 @@ export class ChatService {
       });
     });
   }
-
+  estaConectado(){
+    return new Observable(observer => {
+      this.socket.on("newPerson", Userio => {
+        observer.next(Userio);
+      });
+    });
+  }
   //recibe el mensaje que se va a enviar
   sendMsg(msg: MessageI) {
     this.contenido=msg.content;
