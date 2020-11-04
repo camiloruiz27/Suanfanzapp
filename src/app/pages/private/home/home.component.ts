@@ -57,19 +57,21 @@ export class HomeComponent implements OnInit, OnDestroy {
         {id:"154524jdgsy",content: "a lo que se mueva", isRead:true, isMe:true, time:"7:24", from:"pepe@pepe"},
         {id:"154524yu",content: "entonces ando de gallinazo", isRead:true, isMe:false, time:"7:25", from:"pepe@pepe"},
         ]
-    }/*,
-    {
+    },
+    { 
+      status:"Offline",
+      identifier:"ejemplo@ejemplo.com",
       title: "El traumado",
       icon: "/assets/img/tr.jpg",
       isRead: true,
       msgPreview: "Suerte es que le deseo, haga eso pi**",
       lastMsg: "18:30",
       msgs: [
-        /*{content: "Suerte es que le deseo, haga eso pi**", isRead:true, isMe:true, time:"9:24"},
-        {content: "obligueme perro", isRead:true, isMe:false, time:"9:25"},
-      *//*]
+        {id:"154524jdgsy",content: "Suerte es que le deseo, haga eso pi**", isRead:true, isMe:true, time:"9:24",from:"pepe@pepe"},
+        {id:"154524yu",content: "obligueme perro", isRead:true, isMe:false, time:"9:25",from:"pepe@pepe"},
+      ]
 
-    },
+    }/*,
     {
       title: "Solos Pobres y FEOS",
       icon: "/assets/img/td.jpeg",

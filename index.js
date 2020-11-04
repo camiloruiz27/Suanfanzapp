@@ -55,10 +55,16 @@ io.on('connection', (socket) => {
   })
   socket.on('esteSeleccionado', (identificador) =>{
     console.log("esta seleccionado"+identificador)
-    const recieverSocket = connectedUsers[identificador].id
-    io.to(recieverSocket).emit('EstaConectado',identificador)
+    usuario=isUser(connectedUsers,identificador)
+      console.log("ConnectedUser[identificador] "+usuario)
+      if (usuario===undefined) {
+        console.log("usuario no conectado")
+        io.emit('Desconectado',identificador)
+      }else{
+        const recieverSocket = connectedUsers[identificador].id
+      io.to(recieverSocket).emit('EstaConectado',identificador)
     }
-  )
+  })
 
   //funcion cuando alguien cierre sesion
   /*socket.on(LOGOUT, ()=>{
