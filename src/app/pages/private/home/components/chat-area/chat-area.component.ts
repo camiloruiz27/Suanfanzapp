@@ -18,7 +18,18 @@ export class ChatAreaComponent implements OnInit {
   constructor(public chatService: ChatService) { }
 
   ngOnInit(): void {
+    
+    const boton_bajar = document.getElementById('bajar');
+
+    boton_bajar.addEventListener("click", this.Down);
+
+    console.log(scroll); 
+
+    
+
   }
+
+
 
   sendMsg() {
     const msg: MessageI = {
@@ -30,5 +41,21 @@ export class ChatAreaComponent implements OnInit {
     }
     this.chatService.sendMsg(msg);
     this.msg = "";
+    let scroll = document.getElementById ('chat')
+    
+    scroll.scrollTo({
+      top:5000,
+      behavior:'smooth'
+    })
+  }
+
+  Down(){
+    
+    let scroll = document.getElementById ('chat')
+    scroll.scrollTo({
+      top:1000,
+      behavior:'smooth'
+    })
+
   }
 }

@@ -71,6 +71,7 @@ $titleFont: sfProTextMedium;
         }
     }
 }
+
 .chat {
     width: 100%;
     height: calc(100% - 133px);
@@ -96,6 +97,23 @@ $titleFont: sfProTextMedium;
             padding: 5px 12px 6px;
             box-shadow:0 1px .5px rgba(black,.13);
         }
+      
+    }
+    .bajar{
+        position: absolute;
+        bottom: 17px;
+        z-index: 200;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        background: white;
+        cursor: pointer;
+        margin-bottom: 5%;
+        margin-left: 65%;
+        border-radius: 100%;
+        
     }
     
 }
