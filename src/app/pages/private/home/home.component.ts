@@ -204,7 +204,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       });
   }
   async onSelectInbox(index: number) {
-    //this.estadoActual="online";
+    this.estadoActual="online";
     this.Activechat =this.chats[index].identifier;
    //this.statusUser();
     this.currentChat.title = this.chats[index].title;
@@ -214,7 +214,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       console.log("he undido en"+this.currentChat.title)
       console.log("estado"+this.currentChat.status)
     this.chatService.idenificadorId(this.Activechat);
-
     }
 
   async  doLogout() {
@@ -343,7 +342,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             console.log("ya exite el contacto")
             this.chats[i].lastMsg=msg.content
             this.chats[i].msgPreview=msg.time
-            //this.chats[i].status="Online"
+            this.chats[i].status="Online"
             msg.isMe = this.currentChat.title === msg.owner ? true : false;
             this.chats[i].msgs.push(msg);
             }else{
@@ -365,19 +364,24 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
     async cargandoContactos(msg: MessageI) {
-      msg.isMe = this.currentChat.title === msg.owner ? true : false;
+      //msg.isMe = this.currentChat.title === msg.owner ? true : false;
+      msg.isMe=true;
       this.chats.push({status:"Online",identifier:msg.from,title:msg.from,icon:"/assets/img/Default.png",msgPreview:msg.time, isRead:false, lastMsg:msg.content, msgs:[msg]})
     }
     async myNewMessages(msg: MessageI){
       //this.statusUserDesconnected()
       console.log("si imprimo mis mensajes")
+      //this.esLeido(msg.from)
       msg.isMe=true;
+      this.chatService.itsSelectd().subscribe((user:string) => {
+        console.log("me Suscribi Aquien esta tocado")
+      if (msg.from==user) {
+        msg.isRead=true
+      }
+      });
       this.currentChat.msgs.push(msg);
     }
-    async esLeido(){
-      this.currentChat.msgs
 
-    }
 
   SearchAnim(){
     

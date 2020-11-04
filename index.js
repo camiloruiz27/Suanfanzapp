@@ -20,7 +20,7 @@ let connectedUsers = { }
 io.on('connection', (socket) => {
   console.log("Socket Id:" + socket.id);
   console.log('a user connected');
-  io.sockets.emit('broadcast',conectado)
+  //io.sockets.emit('broadcast',conectado)
   //console.log(socket.id);
   //console.log(email);
   //dice queusuarios estan conectados
@@ -51,8 +51,14 @@ io.on('connection', (socket) => {
       console.log("Se ha deconectado "+socket.user.name)
       //io.emit('Desconectado',socket.user.name)
     }
-    io.sockets.emit('broadcast',desconectado)
+    //io.sockets.emit('broadcast',desconectado)
   })
+  socket.on('esteSeleccionado', (identificador) =>{
+    console.log("esta seleccionado"+identificador)
+    const recieverSocket = connectedUsers[identificador].id
+    io.to(recieverSocket).emit('EstaConectado',identificador)
+    }
+  )
 
   //funcion cuando alguien cierre sesion
   /*socket.on(LOGOUT, ()=>{
@@ -61,10 +67,6 @@ io.on('connection', (socket) => {
 		console.log("Disconnect", connectedUsers);
 
   })*/
-  
-	/*socket.on(MESSAGE_SENT, ({chatId, message})=>{
-		sendMessageToChatFromUser(chatId, message)
-	})*/
 
   //funcion cuando alguien este escribiendo
 	/*socket.on('Escribiendo', ({chatId, isTyping})=>{

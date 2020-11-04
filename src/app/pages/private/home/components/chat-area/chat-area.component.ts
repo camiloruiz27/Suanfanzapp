@@ -21,11 +21,11 @@ export class ChatAreaComponent implements OnInit {
   constructor(public chatService: ChatService, public homeComponent: HomeComponent) { }
 
   ngOnInit(): void {
-    this.socket.on('broadcast',(socket)=>{
+    /*this.socket.on('broadcast',(socket)=>{
      const status =document.getElementById('statusConnection');
      console.log("esta en conxeion? "+socket)
      //status.innerHTML=socket;
-    } )
+    } )*/
   }
   getTime(date){
     return `${date.getHours()}:${("0"+date.getMinutes()).slice(-2)}`

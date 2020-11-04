@@ -45,7 +45,16 @@ export class ChatService {
   idenificadorId(identificador:string){
     this.identificacion=identificador
     console.log("Identificaden la Funcion Identificador:" +identificador);
+    this.socket.emit('esteSeleccionado', identificador);
     console.log("Lista en La funcion identificador: "+this.ListaUsuarios);
+  }
+  itsSelectd(){
+    return new Observable(observer => {
+      this.socket.on("EstaConectado", seleccionado => {
+        console.log("este esta seleccionado"+seleccionado)
+        observer.next(seleccionado);
+      });
+    });
   }
   //le envia al servidor quien acaba de conectarse
   EnviarUsuario(recibido:NewUsers){
